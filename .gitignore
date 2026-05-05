@@ -1,0 +1,29 @@
+# Maven / Java build outputs
+/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+
+# IDE files
+/.idea/
+*.iml
+
+# VS Code
+/.vscode/
+
+# Env/config secrets
+.env
+.env.*
+*.local
+
+# Docker local overrides
+/docker-compose.override.yml
+

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Multipart Uploads</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+    <meta http-equiv="refresh" content="5">
+</head>
+<body>
+<h1 th:text="|Multipart Uploads: ${bucket}|"></h1>
+<p>
+    <a th:href="@{|/buckets/${bucket}|}">Bucket'a don</a>
+    |
+    <a th:href="@{/buckets}">Bucket listesine don</a>
+</p>
+
+<div th:if="${success}" class="success" th:text="${success}"></div>
+<div th:if="${error}" class="error" th:text="${error}"></div>
+
+<div class="box">
+    <table>
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Upload ID</th>
+            <th>Storage Class</th>
+            <th>Baslanma</th>
+            <th>Islem</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(uploads)}">
+            <td colspan="5" class="muted">Bekleyen multipart upload yok</td>
+        </tr>
+        <tr th:each="upload : ${uploads}">
+            <td th:text="${upload.key}"></td>
+            <td th:text="${upload.uploadId}" style="font-size:0.8em; word-break:break-all; max-width:200px;"></td>
+            <td th:text="${upload.storageClass}"></td>
+            <td th:text="${upload.initiated}"></td>
+            <td>
+                <form th:action="@{|/buckets/${bucket}/multipart-uploads/abort|}" method="post"
+                      onsubmit="return confirm('Bu multipart upload iptal edilecek. Emin misiniz?')">
+                    <input type="hidden" name="key" th:value="${upload.key}">
+                    <input type="hidden" name="uploadId" th:value="${upload.uploadId}">
+                    <button type="submit">Iptal</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<p class="muted">Sayfa her 5 saniyede bir otomatik yenilenir.</p>
+</body>
+</html>

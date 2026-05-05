@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Browser</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<h1 th:text="|Bucket: ${bucket}|"></h1>
+<p>
+    <a th:href="@{/buckets}">Bucket listesine don</a>
+    |
+    <a th:href="@{|/buckets/${bucket}/multipart-uploads|}">Multipart Uploads</a>
+</p>
+
+<div th:if="${success}" class="success" th:text="${success}"></div>
+<div th:if="${error}" class="error" th:text="${error}"></div>
+
+<div class="box">
+    <p><strong>Prefix:</strong> <span th:text="${result.prefix == '' ? '/' : result.prefix}"></span></p>
+    <p th:if="${result.parentPrefix != null}">
+        <a th:href="@{|/buckets/${bucket}?prefix=${result.parentPrefix}|}">Ust klasore cik</a>
+    </p>
+</div>
+
+<div class="box">
+    <h3>Dosya Yukle</h3>
+    <form th:action="@{|/buckets/${bucket}/upload|}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="prefix" th:value="${result.prefix}">
+        <input type="file" name="file" required>
+        <select name="storageClass">
+            <option value="STANDARD" selected>STANDARD</option>
+            <option value="STANDARD_IA">STANDARD_IA</option>
+            <option value="ONEZONE_IA">ONEZONE_IA</option>
+            <option value="INTELLIGENT_TIERING">INTELLIGENT_TIERING</option>
+            <option value="GLACIER_IR">GLACIER_IR</option>
+            <option value="GLACIER">GLACIER</option>
+            <option value="DEEP_ARCHIVE">DEEP_ARCHIVE</option>
+        </select>
+        <button type="submit">Yukle</button>
+    </form>
+
+    <h3>Klasor Olustur</h3>
+    <form th:action="@{|/buckets/${bucket}/folders|}" method="post">
+        <input type="hidden" name="prefix" th:value="${result.prefix}">
+        <input type="text" name="folderName" placeholder="Yeni klasor adi" required>
+        <button type="submit">Olustur</button>
+    </form>
+</div>
+
+<div class="box">
+    <h3>Klasorler</h3>
+    <table>
+        <thead>
+        <tr><th>Ad</th><th>Islem</th></tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(result.folders)}">
+            <td colspan="2" class="muted">Klasor yok</td>
+        </tr>
+        <tr th:each="folder : ${result.folders}">
+            <td th:text="${folder.name}"></td>
+            <td>
+                <a th:href="@{|/buckets/${bucket}?prefix=${folder.prefix}|}">Ac</a>
+                |
+                <a th:href="@{|/buckets/${bucket}/delete-folder?folderPrefix=${folder.prefix}&prefix=${result.prefix}|}">Sil</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="box">
+    <h3>Dosyalar</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Boyut</th>
+            <th>Son Degisiklik</th>
+            <th>Storage Class</th>
+            <th>Islemler</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(result.objects)}">
+            <td colspan="5" class="muted">Dosya yok</td>
+        </tr>
+        <tr th:each="obj : ${result.objects}">
+            <td th:text="${obj.name}"></td>
+            <td th:text="${obj.size}"></td>
+            <td th:text="${obj.lastModified}"></td>
+            <td th:text="${obj.storageClass}"></td>
+            <td>
+                <a th:href="@{/buckets/{bucket}/metadata(bucket=${bucket},key=${obj.key},prefix=${result.prefix})}">Metadata</a>
+                |
+                <a th:href="@{/buckets/{bucket}/download(bucket=${bucket},key=${obj.key})}">Indir</a>
+                |
+                <a th:href="@{/buckets/{bucket}/copy(bucket=${bucket},sourceKey=${obj.key},prefix=${result.prefix})}">Kopyala</a>
+                |
+                <a th:href="@{/buckets/{bucket}/delete(bucket=${bucket},key=${obj.key},prefix=${result.prefix})}">Sil</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+

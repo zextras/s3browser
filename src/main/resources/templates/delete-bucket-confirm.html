@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Bucket Delete Confirm</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<h1>Bucket Silme Onayi</h1>
+<div th:if="${error}" class="error" th:text="${error}"></div>
+
+<div class="box">
+    <p>Asagidaki bucket silinecek:</p>
+    <p><strong th:text="${bucketName}"></strong></p>
+    <p class="muted">Not: AWS tarafinda bucket doluysa silme islemi basarisiz olur.</p>
+
+    <form th:action="@{/buckets/delete}" method="post">
+        <input type="hidden" name="bucketName" th:value="${bucketName}">
+        <label>
+            <input type="checkbox" name="confirm" value="true">
+            Evet, bucket silme islemini onayliyorum.
+        </label>
+        <br><br>
+        <button type="submit">Sil</button>
+        <a th:href="@{/buckets}">Vazgec</a>
+    </form>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Metadata</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<h1>Object Metadata</h1>
+<p>
+    <a th:href="@{|/buckets/${bucket}?prefix=${prefix}|}">Geri don</a>
+</p>
+
+<div class="box">
+    <table>
+        <tbody>
+        <tr><th>Key</th><td th:text="${metadata.key}"></td></tr>
+        <tr><th>ETag</th><td th:text="${metadata.eTag}"></td></tr>
+        <tr><th>Size</th><td th:text="${metadata.size}"></td></tr>
+        <tr><th>Content Type</th><td th:text="${metadata.contentType}"></td></tr>
+        <tr><th>Last Modified</th><td th:text="${metadata.lastModified}"></td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="box">
+    <h3>User Metadata</h3>
+    <table>
+        <thead><tr><th>Key</th><th>Value</th></tr></thead>
+        <tbody>
+        <tr th:if="${#maps.isEmpty(metadata.userMetadata)}">
+            <td colspan="2" class="muted">Custom metadata yok</td>
+        </tr>
+        <tr th:each="entry : ${metadata.userMetadata}">
+            <td th:text="${entry.key}"></td>
+            <td th:text="${entry.value}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+

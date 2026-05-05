@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Buckets</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<h1>Bucket Listesi</h1>
+<div th:if="${success}" class="success" th:text="${success}"></div>
+<div th:if="${error}" class="error" th:text="${error}"></div>
+
+<div class="box">
+    <a th:href="@{/connect}">Baglanti Ayarlari</a>
+    <form style="display:inline-block; margin-left:10px;" th:action="@{/disconnect}" method="post">
+        <button type="submit">Disconnect</button>
+    </form>
+</div>
+
+<div class="box">
+    <h3>Bucket Olustur</h3>
+    <form th:action="@{/buckets/create}" method="post">
+        <input type="text" name="bucketName" placeholder="ornek-bucket-adi" required>
+        <button type="submit">Olustur</button>
+    </form>
+</div>
+
+<div class="box">
+    <table>
+        <thead>
+        <tr>
+            <th>Bucket</th>
+            <th>Olusturulma</th>
+            <th>Islem</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bucket : ${buckets}">
+            <td><a th:href="@{|/buckets/${bucket.name}|}" th:text="${bucket.name}"></a></td>
+            <td th:text="${bucket.createdAt}"></td>
+            <td><a th:href="@{|/buckets/delete?bucketName=${bucket.name}|}">Sil</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+

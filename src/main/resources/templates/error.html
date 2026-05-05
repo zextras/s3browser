@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Error</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<h1>Bir hata olustu</h1>
+<div class="error">
+    <p><strong>Path:</strong> <span th:text="${path}"></span></p>
+    <p><strong>Mesaj:</strong> <span th:text="${message}"></span></p>
+</div>
+<p><a th:href="@{/connect}">Baglanti ekranina don</a></p>
+</body>
+</html>
+

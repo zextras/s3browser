@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Copy Object</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<h1>Dosya Kopyalama</h1>
+<div th:if="${error}" class="error" th:text="${error}"></div>
+
+<div class="box">
+    <p><strong>Kaynak:</strong> <span th:text="${sourceKey}"></span></p>
+    <form th:action="@{|/buckets/${bucket}/copy|}" method="post">
+        <input type="hidden" name="sourceKey" th:value="${sourceKey}">
+        <input type="hidden" name="prefix" th:value="${prefix}">
+
+        <label>Hedef key</label>
+        <input type="text" name="destinationKey" th:value="${destinationKey}" required>
+
+        <br><br>
+        <button type="submit">Kopyala</button>
+        <a th:href="@{|/buckets/${bucket}?prefix=${prefix}|}">Vazgec</a>
+    </form>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>s3browser - Connection</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<h1>s3browser</h1>
+<p class="muted">S3 Browser (Java 21 + Spring + AWS SDK v2)</p>
+
+<div th:if="${error}" class="error" th:text="${error}"></div>
+<div th:if="${success}" class="success" th:text="${success}"></div>
+
+<div class="box">
+    <h2>Baglanti</h2>
+    <form th:action="@{/connect}" th:object="${connectionForm}" method="post">
+        <div class="row">
+            <div class="col">
+                <label>Region</label>
+                <input type="text" th:field="*{region}" placeholder="eu-west-1">
+            </div>
+            <div class="col">
+                <label>Endpoint Override (opsiyonel)</label>
+                <input type="text" th:field="*{endpointOverride}" placeholder="http://localhost:9000">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>Access Key ID (opsiyonel)</label>
+                <input type="text" th:field="*{accessKeyId}">
+            </div>
+            <div class="col">
+                <label>Secret Access Key (opsiyonel)</label>
+                <input type="password" th:field="*{secretAccessKey}">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>Session Token (opsiyonel)</label>
+                <input type="password" th:field="*{sessionToken}">
+            </div>
+            <div class="col">
+                <label>Varsayilan Bucket (opsiyonel)</label>
+                <input type="text" th:field="*{defaultBucket}" placeholder="baglandiktan sonra direkt acilsin">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>
+                    <input type="checkbox" th:field="*{forcePathStyle}">
+                    Path-style access zorla (S3 uyumlu servisler icin)
+                </label>
+            </div>
+        </div>
+
+        <button type="submit">Baglan</button>
+    </form>
+</div>
+</body>
+</html>
+
