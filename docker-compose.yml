@@ -17,6 +17,9 @@ services:
       # Uygulama ayarları (isteğe bağlı override)
       APP_UPLOAD_MULTIPART_THRESHOLD_BYTES: "16777216"
       APP_UPLOAD_MULTIPART_PART_SIZE_BYTES: "8388608"
+      APP_CONNECTIONS_STORE_FILE: "/app/data/connections.json"
+    volumes:
+      - s3browser-data:/app/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health 2>/dev/null || wget -qO- http://localhost:8080/ 2>/dev/null | grep -q '.' && echo OK"]
@@ -24,4 +27,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+volumes:
+  s3browser-data:
 

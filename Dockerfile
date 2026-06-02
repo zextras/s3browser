@@ -20,9 +20,10 @@ FROM eclipse-temurin:21-jre-alpine AS runtime
 
 # Güvenlik: root olmayan kullanıcı
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
-
 WORKDIR /app
+RUN mkdir -p /app/data && chown -R appuser:appgroup /app
+
+USER appuser
 
 COPY --from=builder /build/target/s3browser-*.jar app.jar
 

@@ -10,19 +10,26 @@
 <div th:if="${error}" class="error" th:text="${error}"></div>
 
 <div class="box">
+    <strong>Endpoint:</strong> <span th:text="${connectionEndpoint}"></span>
+    | <strong>Access Key:</strong> <span th:text="${connectionAccessKey}"></span>
+    | <strong>Region:</strong> <span th:text="${connectionRegion}"></span>
+</div>
+
+<div class="box">
     <p>Asagidaki bucket silinecek:</p>
     <p><strong th:text="${bucketName}"></strong></p>
     <p class="muted">Not: AWS tarafinda bucket doluysa silme islemi basarisiz olur.</p>
 
     <form th:action="@{/buckets/delete}" method="post">
         <input type="hidden" name="bucketName" th:value="${bucketName}">
+        <input type="hidden" name="connectionId" th:value="${connectionId}">
         <label>
             <input type="checkbox" name="confirm" value="true">
             Evet, bucket silme islemini onayliyorum.
         </label>
         <br><br>
         <button type="submit">Sil</button>
-        <a th:href="@{/buckets}">Vazgec</a>
+        <a th:href="@{/buckets(connectionId=${connectionId})}">Vazgec</a>
     </form>
 </div>
 </body>

@@ -54,3 +54,17 @@ mvn test
 - For services like MinIO, you can use endpoint + path-style options.
 - Memory usage may increase for large files because the download endpoint currently returns `byte[]` as an MVP approach.
 - Upload list is kept in server memory (it is cleared when the app restarts).
+
+## Docker: Persistent Connections (No DB)
+
+- `docker-compose.yml` mounts a named volume at `/app/data`.
+- The app stores saved connections at `/app/data/connections.json` via `APP_CONNECTIONS_STORE_FILE`.
+- This keeps saved connections after container restart/recreate.
+
+Run with compose:
+
+```bash
+cd /Users/soner/zextras/s3browser
+docker compose up -d --build
+```
+

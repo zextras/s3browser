@@ -8,10 +8,15 @@
 </head>
 <body>
 <h1 th:text="|Multipart Uploads: ${bucket}|"></h1>
+<div class="box">
+    <strong>Endpoint:</strong> <span th:text="${connectionEndpoint}"></span>
+    | <strong>Access Key:</strong> <span th:text="${connectionAccessKey}"></span>
+    | <strong>Region:</strong> <span th:text="${connectionRegion}"></span>
+</div>
 <p>
-    <a th:href="@{|/buckets/${bucket}|}">Bucket'a don</a>
+    <a th:href="@{/buckets/{bucket}(bucket=${bucket},connectionId=${connectionId})}">Bucket'a don</a>
     |
-    <a th:href="@{/buckets}">Bucket listesine don</a>
+    <a th:href="@{/buckets(connectionId=${connectionId})}">Bucket listesine don</a>
 </p>
 
 <div th:if="${success}" class="success" th:text="${success}"></div>
@@ -42,6 +47,7 @@
                       onsubmit="return confirm('Bu multipart upload iptal edilecek. Emin misiniz?')">
                     <input type="hidden" name="key" th:value="${upload.key}">
                     <input type="hidden" name="uploadId" th:value="${upload.uploadId}">
+                    <input type="hidden" name="connectionId" th:value="${connectionId}">
                     <button type="submit">Iptal</button>
                 </form>
             </td>

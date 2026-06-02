@@ -7,8 +7,13 @@
 </head>
 <body>
 <h1>Object Metadata</h1>
+<div class="box">
+    <strong>Endpoint:</strong> <span th:text="${connectionEndpoint}"></span>
+    | <strong>Access Key:</strong> <span th:text="${connectionAccessKey}"></span>
+    | <strong>Region:</strong> <span th:text="${connectionRegion}"></span>
+</div>
 <p>
-    <a th:href="@{|/buckets/${bucket}?prefix=${prefix}|}">Geri don</a>
+    <a th:href="@{/buckets/{bucket}(bucket=${bucket},prefix=${prefix},connectionId=${connectionId})}">Geri don</a>
 </p>
 
 <div class="box">

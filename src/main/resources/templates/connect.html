@@ -13,7 +13,50 @@
 <div th:if="${success}" class="success" th:text="${success}"></div>
 
 <div class="box">
-    <h2>Baglanti</h2>
+    <strong>Endpoint:</strong> <span th:text="${connectionEndpoint}"></span>
+    | <strong>Access Key:</strong> <span th:text="${connectionAccessKey}"></span>
+    | <strong>Region:</strong> <span th:text="${connectionRegion}"></span>
+</div>
+
+<div class="box">
+    <h2>Kayitli Baglantilar</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Baglanti</th>
+            <th>Default Bucket</th>
+            <th>Durum</th>
+            <th>Islemler</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(connections)}">
+            <td colspan="4" class="muted">Henuz kayitli baglanti yok</td>
+        </tr>
+        <tr th:each="conn : ${connections}">
+            <td th:text="${conn.label}"></td>
+            <td th:text="${conn.defaultBucket == null ? '-' : conn.defaultBucket}"></td>
+            <td th:text="${conn.active ? 'Aktif' : '-'}"></td>
+            <td>
+                <a th:href="@{/connect(connectionId=${conn.connectionId})}">Formu Doldur</a>
+                |
+                <form style="display:inline-block;" th:action="@{/connections/select}" method="post">
+                    <input type="hidden" name="connectionId" th:value="${conn.connectionId}">
+                    <button type="submit" th:disabled="${conn.active}">Aktif Yap</button>
+                </form>
+                |
+                <form style="display:inline-block;" th:action="@{/connections/{id}/disconnect(id=${conn.connectionId})}" method="post"
+                      onsubmit="return confirm('Bu baglanti kaldirilacak. Emin misiniz?')">
+                    <button type="submit">Kaldir</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="box">
+    <h2>Yeni Baglanti Ekle</h2>
     <form th:action="@{/connect}" th:object="${connectionForm}" method="post">
         <div class="row">
             <div class="col">

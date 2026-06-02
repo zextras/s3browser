@@ -7,10 +7,15 @@
 </head>
 <body>
 <h1 th:text="|Bucket: ${bucket}|"></h1>
+<div class="box">
+    <strong>Endpoint:</strong> <span th:text="${connectionEndpoint}"></span>
+    | <strong>Access Key:</strong> <span th:text="${connectionAccessKey}"></span>
+    | <strong>Region:</strong> <span th:text="${connectionRegion}"></span>
+</div>
 <p>
-    <a th:href="@{/buckets}">Bucket listesine don</a>
+    <a th:href="@{/buckets(connectionId=${connectionId})}">Bucket listesine don</a>
     |
-    <a th:href="@{|/buckets/${bucket}/multipart-uploads|}">Multipart Uploads</a>
+    <a th:href="@{/buckets/{bucket}/multipart-uploads(bucket=${bucket},connectionId=${connectionId})}">Multipart Uploads</a>
 </p>
 
 <div th:if="${success}" class="success" th:text="${success}"></div>
@@ -19,7 +24,7 @@
 <div class="box">
     <p><strong>Prefix:</strong> <span th:text="${result.prefix == '' ? '/' : result.prefix}"></span></p>
     <p th:if="${result.parentPrefix != null}">
-        <a th:href="@{|/buckets/${bucket}?prefix=${result.parentPrefix}|}">Ust klasore cik</a>
+        <a th:href="@{/buckets/{bucket}(bucket=${bucket},prefix=${result.parentPrefix},connectionId=${connectionId})}">Ust klasore cik</a>
     </p>
 </div>
 
@@ -27,6 +32,7 @@
     <h3>Dosya Yukle</h3>
     <form th:action="@{|/buckets/${bucket}/upload|}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="prefix" th:value="${result.prefix}">
+        <input type="hidden" name="connectionId" th:value="${connectionId}">
         <input type="file" name="file" required>
         <select name="storageClass">
             <option value="STANDARD" selected>STANDARD</option>
@@ -43,6 +49,7 @@
     <h3>Klasor Olustur</h3>
     <form th:action="@{|/buckets/${bucket}/folders|}" method="post">
         <input type="hidden" name="prefix" th:value="${result.prefix}">
+        <input type="hidden" name="connectionId" th:value="${connectionId}">
         <input type="text" name="folderName" placeholder="Yeni klasor adi" required>
         <button type="submit">Olustur</button>
     </form>
@@ -61,9 +68,9 @@
         <tr th:each="folder : ${result.folders}">
             <td th:text="${folder.name}"></td>
             <td>
-                <a th:href="@{|/buckets/${bucket}?prefix=${folder.prefix}|}">Ac</a>
+                <a th:href="@{/buckets/{bucket}(bucket=${bucket},prefix=${folder.prefix},connectionId=${connectionId})}">Ac</a>
                 |
-                <a th:href="@{|/buckets/${bucket}/delete-folder?folderPrefix=${folder.prefix}&prefix=${result.prefix}|}">Sil</a>
+                <a th:href="@{/buckets/{bucket}/delete-folder(bucket=${bucket},folderPrefix=${folder.prefix},prefix=${result.prefix},connectionId=${connectionId})}">Sil</a>
             </td>
         </tr>
         </tbody>
@@ -92,13 +99,13 @@
             <td th:text="${obj.lastModified}"></td>
             <td th:text="${obj.storageClass}"></td>
             <td>
-                <a th:href="@{/buckets/{bucket}/metadata(bucket=${bucket},key=${obj.key},prefix=${result.prefix})}">Metadata</a>
+                <a th:href="@{/buckets/{bucket}/metadata(bucket=${bucket},key=${obj.key},prefix=${result.prefix},connectionId=${connectionId})}">Metadata</a>
                 |
-                <a th:href="@{/buckets/{bucket}/download(bucket=${bucket},key=${obj.key})}">Indir</a>
+                <a th:href="@{/buckets/{bucket}/download(bucket=${bucket},key=${obj.key},connectionId=${connectionId})}">Indir</a>
                 |
-                <a th:href="@{/buckets/{bucket}/copy(bucket=${bucket},sourceKey=${obj.key},prefix=${result.prefix})}">Kopyala</a>
+                <a th:href="@{/buckets/{bucket}/copy(bucket=${bucket},sourceKey=${obj.key},prefix=${result.prefix},connectionId=${connectionId})}">Kopyala</a>
                 |
-                <a th:href="@{/buckets/{bucket}/delete(bucket=${bucket},key=${obj.key},prefix=${result.prefix})}">Sil</a>
+                <a th:href="@{/buckets/{bucket}/delete(bucket=${bucket},key=${obj.key},prefix=${result.prefix},connectionId=${connectionId})}">Sil</a>
             </td>
         </tr>
         </tbody>

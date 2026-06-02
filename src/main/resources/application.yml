@@ -9,6 +9,8 @@ spring:
       max-request-size: 2GB
 
 app:
+  connections:
+    store-file: .s3browser/connections.json
   upload:
     multipart-threshold-bytes: 16777216
     multipart-part-size-bytes: 8388608
