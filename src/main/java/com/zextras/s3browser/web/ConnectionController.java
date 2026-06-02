@@ -1,6 +1,7 @@
 package com.zextras.s3browser.web;
 
 import com.zextras.s3browser.application.usecase.S3BrowserUseCase;
+import com.zextras.s3browser.domain.ConnectionSettings;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -62,16 +63,7 @@ public class ConnectionController {
         s3BrowserUseCase.verifyConnection(settings);
         String connectionId = connectionSessionService.save(session, settings);
         redirectAttributes.addFlashAttribute("success", "Baglanti eklendi ve aktif edildi.");
-        if (settings.defaultBucket() == null || settings.defaultBucket().isBlank()) {
-            return "redirect:" + ServletUriComponentsBuilder.fromPath("/buckets")
-                .queryParam("connectionId", connectionId)
-                .toUriString();
-        }
-
-        return "redirect:" + ServletUriComponentsBuilder.fromPath("/buckets/{bucket}")
-            .queryParam("connectionId", connectionId)
-            .buildAndExpand(settings.defaultBucket())
-            .toUriString();
+        return redirectToConnectionHome(connectionId, settings);
     }
 
     @PostMapping("/connections/select")
@@ -86,9 +78,8 @@ public class ConnectionController {
         }
 
         redirectAttributes.addFlashAttribute("success", "Aktif baglanti degistirildi.");
-        return "redirect:" + ServletUriComponentsBuilder.fromPath("/buckets")
-            .queryParam("connectionId", connectionId)
-            .toUriString();
+        var settings = connectionSessionService.getById(session, connectionId);
+        return redirectToConnectionHome(connectionId, settings);
     }
 
     @PostMapping("/connections/{connectionId}/disconnect")
@@ -107,16 +98,43 @@ public class ConnectionController {
         if (!StringUtils.hasText(activeConnectionId)) {
             return "redirect:/connect";
         }
-        return "redirect:" + ServletUriComponentsBuilder.fromPath("/buckets")
-            .queryParam("connectionId", activeConnectionId)
-            .toUriString();
+        var settings = connectionSessionService.getById(session, activeConnectionId);
+        return redirectToConnectionHome(activeConnectionId, settings);
     }
 
     @PostMapping("/disconnect")
-    public String disconnect(HttpSession session, RedirectAttributes redirectAttributes) {
+    public String disconnect(
+        @RequestParam(required = false) String connectionId,
+        @RequestParam(defaultValue = "false") boolean confirm,
+        HttpSession session,
+        RedirectAttributes redirectAttributes
+    ) {
+        if (!confirm) {
+            redirectAttributes.addFlashAttribute("error", "Tum baglantilari temizlemek icin onay vermeniz gerekiyor.");
+            if (StringUtils.hasText(connectionId)) {
+                return "redirect:" + ServletUriComponentsBuilder.fromPath("/buckets")
+                    .queryParam("connectionId", connectionId)
+                    .toUriString();
+            }
+            return "redirect:/connect";
+        }
+
         connectionSessionService.clear(session);
         redirectAttributes.addFlashAttribute("success", "Tum baglantilar temizlendi.");
         return "redirect:/connect";
+    }
+
+    private String redirectToConnectionHome(String connectionId, ConnectionSettings settings) {
+        if (settings != null && StringUtils.hasText(settings.defaultBucket())) {
+            return "redirect:" + ServletUriComponentsBuilder.fromPath("/buckets/{bucket}")
+                .queryParam("connectionId", connectionId)
+                .buildAndExpand(settings.defaultBucket())
+                .toUriString();
+        }
+
+        return "redirect:" + ServletUriComponentsBuilder.fromPath("/buckets")
+            .queryParam("connectionId", connectionId)
+            .toUriString();
     }
 
     private void addConnectionAttributes(Model model, HttpSession session, String selectedConnectionId) {

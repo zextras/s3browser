@@ -19,6 +19,11 @@
 <div class="box">
     <a th:href="@{/connect(connectionId=${connectionId})}">Baglanti Ayarlari</a>
     <form style="display:inline-block; margin-left:10px;" th:action="@{/disconnect}" method="post">
+        <input type="hidden" name="connectionId" th:value="${connectionId}">
+        <label style="display:inline-block; margin-right:8px;">
+            <input type="checkbox" name="confirm" value="true">
+            Tum baglantilari silmeyi onayliyorum
+        </label>
         <button type="submit">Tum Baglantilari Temizle</button>
     </form>
 </div>
